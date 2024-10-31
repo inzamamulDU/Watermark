@@ -87,20 +87,6 @@ Due to random cropping, we observed no overfitting, and our train and validation
 When measuring the decoder accuracy, we do not use error-correcting codes like in the paper. We take the decoder output, clip it to range [0, 1], then round it up. We call this "Decoder bitwise error". We also report mean squate error of of the decoder for consistency with the paper.
 
 
-### Experimental runs 
-
-This table summarizes experimental runs. Detailed information about the runs can be found in ./experiments folder.
-
-|experiment_name | loss | encoder_mse | bitwise-error | dec_mse | epoch |
-|----------------------------|----------------|----------------|------------------------|-------------|----------------|
-|crop(0.2-0.25) | 0.046 | 0.0019 | 0.0603 | 0.0435 | 300 |
-|cropout(0.55-0.6) | 0.071 | 0.0011 | 0.0647 | 0.0662 | 300 |
-|dropout(0.55-0.6) | 0.033 | 0.0019 | 0.008 | 0.0298 | 300 |
-|jpeg | 0.0272 | 0.0025 | 0.0096 | 0.0253 | 300 | 
-|resize(0.7-0.8) | 0.0251 | 0.0016 | 0.0052 | 0.0238 | 300 | 
-|combined-noise| 0.1681 | 0.0028 | 0.2109 | 0.1648 | 400 | 
-
-
 * **No noise** means no noise layers.
 * **Crop((0.2,0.25),...)** is shorthand for Crop((0.2,0.25),(0.2,0.25)). This means that the height and the weight of the cropped image have the expected value of (0.25 + 0.2)/2 = 0.225. Therefore, the ratio of (expected) area of the  Cropped image against the original image is 0.225x0.225 ≈ 0.05. The paper used p = 0.035.
 * **Cropout((0.55,0.6),...)** is a shorhand for Cropout((0.55,0.6),(0.55,0.6)). Similar to Crop(...), this translates to ratio of Cropped vs original image areas with p ≈ 0.33. The paper used p = 0.3
