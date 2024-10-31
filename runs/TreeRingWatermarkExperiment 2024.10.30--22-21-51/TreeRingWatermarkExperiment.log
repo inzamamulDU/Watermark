@@ -13952,3 +13952,83 @@ discr_encod_bce    0.6932
 Epoch 398 training duration 119.94 sec
 ----------------------------------------
 Running validation for epoch 398/400
+loss               0.3182
+encoder_mse        0.0008
+dec_mse            0.3170
+bitwise-error      0.4943
+adversarial_bce    0.6938
+discr_cover_bce    0.6942
+discr_encod_bce    0.6925
+----------------------------------------
+Saving checkpoint to ./runs/TreeRingWatermarkExperiment 2024.10.30--22-21-51/checkpoints/TreeRingWatermarkExperiment--epoch-398.pyt
+Saving checkpoint done.
+
+Starting epoch 399/400
+Batch size = 32
+Steps in epoch = 15
+Epoch: 399/400 Step: 10/15
+loss               0.3004
+encoder_mse        0.0015
+dec_mse            0.2987
+bitwise-error      0.5056
+adversarial_bce    0.6951
+discr_cover_bce    0.6944
+discr_encod_bce    0.6920
+----------------------------------------
+Epoch: 399/400 Step: 15/15
+loss               0.2998
+encoder_mse        0.0020
+dec_mse            0.2977
+bitwise-error      0.5059
+adversarial_bce    0.6948
+discr_cover_bce    0.6950
+discr_encod_bce    0.6913
+----------------------------------------
+Epoch 399 training duration 119.92 sec
+----------------------------------------
+Running validation for epoch 399/400
+loss               0.3184
+encoder_mse        0.0005
+dec_mse            0.3174
+bitwise-error      0.4970
+adversarial_bce    0.6805
+discr_cover_bce    0.6803
+discr_encod_bce    0.7060
+----------------------------------------
+Saving checkpoint to ./runs/TreeRingWatermarkExperiment 2024.10.30--22-21-51/checkpoints/TreeRingWatermarkExperiment--epoch-399.pyt
+Saving checkpoint done.
+
+Starting epoch 400/400
+Batch size = 32
+Steps in epoch = 15
+Epoch: 400/400 Step: 10/15
+loss               0.2941
+encoder_mse        0.0016
+dec_mse            0.2923
+bitwise-error      0.4975
+adversarial_bce    0.6914
+discr_cover_bce    0.6909
+discr_encod_bce    0.6958
+----------------------------------------
+Epoch: 400/400 Step: 15/15
+loss               0.2957
+encoder_mse        0.0015
+dec_mse            0.2939
+bitwise-error      0.4945
+adversarial_bce    0.6932
+discr_cover_bce    0.6931
+discr_encod_bce    0.6936
+----------------------------------------
+Epoch 400 training duration 119.82 sec
+----------------------------------------
+Running validation for epoch 400/400
+loss               0.3215
+encoder_mse        0.0004
+dec_mse            0.3205
+bitwise-error      0.5072
+adversarial_bce    0.6967
+discr_cover_bce    0.6969
+discr_encod_bce    0.6897
+----------------------------------------
+Saving checkpoint to ./runs/TreeRingWatermarkExperiment 2024.10.30--22-21-51/checkpoints/TreeRingWatermarkExperiment--epoch-400.pyt
+Saving checkpoint done.
