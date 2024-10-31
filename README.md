@@ -1,11 +1,4 @@
-# HiDDeN
-Pytorch implementation of paper "HiDDeN: Hiding Data With Deep Networks" by Jiren Zhu*, Russell Kaplan*, Justin Johnson, and Li Fei-Fei: https://arxiv.org/abs/1807.09937  
-*: These authors contributed equally
-
-The authors have Lua+Torch implementation here: https://github.com/jirenz/HiDDeN
-
-Note that this is a work in progress, and I was not yet able to fully reproduce the results of the original paper.
-
+# Watermark
 ## Requirements
 
 You need [Pytorch](https://pytorch.org/) 1.0 with TorchVision to run this.
