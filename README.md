@@ -8,7 +8,7 @@ The code has been tested with Python 3.6+ and runs both on Ubuntu 16.04, 18.04 a
 ## Data
 
 We use 10,000 images for training and 1,000 images for validation. Following the original paper, we chose 
-those 10,000 + 1,000 images randomly from one of the coco datasets.  http://cocodataset.org/#download
+those 10,000 + 1,000 images randomly from celebHQ Dataset
 
 The data directory has the following structure:
 ```
