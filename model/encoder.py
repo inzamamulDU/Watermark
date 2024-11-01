@@ -1,4 +1,6 @@
 import torch
+import cv2
+import numpy as np
 import torch.nn as nn
 import torch.fft
 from model.conv_bn_relu import ConvBNRelu
@@ -56,40 +58,73 @@ class Encoder(nn.Module):
                             index += 1
         return image_fft
 
-        def split_frequency_bands(self, frequency_image):
-            # Split the frequency image into low, mid, and high-frequency bands
-            h, w = frequency_image.shape[-2:]
-            center_h, center_w = h // 2, w // 2
+    def low_pass_filter(self, image_batch_tensor, radius=50):
+        """
+        Applies a low-pass filter to a batch of RGB images by keeping only low-frequency components.
+        
+        Parameters:
+        image_batch_tensor (torch.Tensor): The input batch of RGB images as a PyTorch tensor of shape (batch_size, 3, H, W) on CUDA.
+        radius (int): The radius for the low-pass filter in the frequency domain.
 
-            # Define band ranges
-            low_radius = min(h, w) // 4
-            high_radius = min(h, w) // 2
+        Returns:
+        low_freq_batch_tensor (torch.Tensor): The batch of RGB images containing only low-frequency components, as a PyTorch tensor on CUDA.
+        """
+        # List to store the low-frequency processed images
+        low_freq_batch = []
 
-            # Create masks for different frequency bands
-            y, x = torch.meshgrid(torch.arange(h), torch.arange(w), indexing='ij')
-            distance = ((y - center_h) ** 2 + (x - center_w) ** 2).sqrt()
+        # Process each image in the batch independently
+        for image_tensor in image_batch_tensor:
+            # Convert individual image tensor from CUDA to CPU and NumPy array for OpenCV processing
+            image_np = image_tensor.detach().cpu().permute(1, 2, 0).numpy()  # Convert to H x W x C (for RGB)
 
-            low_mask = distance <= low_radius
-            high_mask = distance > high_radius
-            mid_mask = (distance > low_radius) & (distance <= high_radius)
+            # Split into channels
+            channels = cv2.split(image_np)
+            low_freq_channels = []
 
-            # Apply masks to get different frequency bands
-            low_band = frequency_image * low_mask
-            mid_band = frequency_image * mid_mask
-            high_band = frequency_image * high_mask
+            for channel in channels:
+                # Step 1: Apply FFT to the channel
+                freq_domain = np.fft.fft2(channel)
+                freq_domain_shifted = np.fft.fftshift(freq_domain)
 
-            return low_band, mid_band, high_band
+                # Step 2: Create a low-pass filter (a circular mask in the center)
+                rows, cols = channel.shape
+                center_row, center_col = rows // 2, cols // 2
+                mask = np.zeros((rows, cols), np.uint8)
+                cv2.circle(mask, (center_col, center_row), radius, 1, thickness=-1)
+
+                # Step 3: Apply the mask to the frequency domain
+                low_freq_shifted = freq_domain_shifted * mask
+
+                # Step 4: Shift back and apply Inverse FFT
+                low_freq = np.fft.ifftshift(low_freq_shifted)
+                spatial_domain = np.fft.ifft2(low_freq)
+
+                # Step 5: Take only the real part and normalize the values
+                spatial_domain = np.real(spatial_domain)
+                spatial_domain = np.clip(spatial_domain, 0, 255).astype(np.uint8)
+
+                low_freq_channels.append(spatial_domain)
+
+            # Combine the channels back into an RGB image in NumPy format
+            low_freq_img_np = cv2.merge(low_freq_channels)
+
+            # Convert the result back to a PyTorch tensor and normalize
+            low_freq_tensor = torch.from_numpy(low_freq_img_np).permute(2, 0, 1).float().cuda() / 255.0  # Normalize to [0, 1]
+            
+            # Append to the list of processed images in batch
+            low_freq_batch.append(low_freq_tensor)
+
+        # Stack all images in the batch to create a single batch tensor
+        low_freq_batch_tensor = torch.stack(low_freq_batch)
+
+        return low_freq_batch_tensor
+
 
 
     def forward(self, image, message):
-        
-        #  # Encode watermark in each band
-        # low_encoded = self.low_band_encoder(low_band)
-        # mid_encoded = self.mid_band_encoder(mid_band)
-        # high_encoded = self.high_band_encoder(high_band)
 
-        encoded_image = self.conv_layers(image)
-        #encoded_image = self.conv_layers(low_encoded)
+        low_pass_image = self.low_pass_filter(image)
+        encoded_image = self.conv_layers(low_pass_image)
         
         # Transform to Fourier space and embed the message as a watermark
         image_fft = torch.fft.fft2(encoded_image)

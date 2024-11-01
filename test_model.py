@@ -2,6 +2,7 @@ import torch
 import torch.nn
 import argparse
 import os
+import cv2
 import numpy as np
 from options import HiDDenConfiguration
 
@@ -15,9 +16,8 @@ import torchvision.transforms.functional as TF
 def randomCrop(img, height, width):
     assert img.shape[0] >= height
     assert img.shape[1] >= width
-    x = np.random.randint(0, img.shape[1] - width)
-    y = np.random.randint(0, img.shape[0] - height)
-    img = img[y:y+height, x:x+width]
+    # Resize the image to the specified dimensions
+    img = cv2.resize(img, (width, height), interpolation=cv2.INTER_AREA)
     return img
 
 
@@ -40,7 +40,7 @@ def main():
     args = parser.parse_args()
 
     train_options, hidden_config, noise_config = utils.load_options(args.options_file)
-    noiser = Noiser(noise_config)
+    noiser = Noiser(noise_config, device)
 
     checkpoint = torch.load(args.checkpoint_file)
     hidden_net = Hidden(hidden_config, device, noiser, None)
@@ -55,7 +55,7 @@ def main():
 
     # for t in range(args.times):
     message = torch.Tensor(np.random.choice([0, 1], (image_tensor.shape[0],
-                                                    hidden_config.message_length))).to(device)
+                                                   64))).to(device)
     losses, (encoded_images, noised_images, decoded_messages) = hidden_net.validate_on_batch([image_tensor, message])
     decoded_rounded = decoded_messages.detach().cpu().numpy().round().clip(0, 1)
     message_detached = message.detach().cpu().numpy()

@@ -133,7 +133,7 @@ def get_data_loaders(hidden_config: HiDDenConfiguration, train_options: Training
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
         ]),
         'test': transforms.Compose([
-            transforms.CenterCrop((hidden_config.H, hidden_config.W)),
+            #transforms.CenterCrop((hidden_config.H, hidden_config.W)),
             transforms.Resize((hidden_config.H, hidden_config.W)),
             transforms.ToTensor(),
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
